@@ -1755,7 +1755,7 @@ int ff_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
 
     // last_st = st;
 
-    av_log(s, AV_LOG_INFO, "seek: performing ff_gen_search\n");
+    av_log(s, AV_LOG_INFO, "seek: performing ff_gen_search to %ld, current dts %ld, last IP pts\n", target_ts, st->cur_dts, st->last_IP_pts);
 
     pos= ff_gen_search(s, stream_index, target_ts, pos_min, pos_max, pos_limit, ts_min, ts_max, flags, &ts, avif->read_timestamp);
     if(pos<0)
