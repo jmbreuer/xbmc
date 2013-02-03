@@ -89,7 +89,7 @@ CFileCache::CFileCache() : CThread("CFileCache")
      m_pCache = new CSimpleFileCache();
    else
      m_pCache = new CCircularCache(g_advancedSettings.m_cacheMemBufferSize
-                                 , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
+                                 , g_advancedSettings.m_cacheMemBufferSize );
    m_seekPossible = 0;
    m_cacheFull = false;
 }
@@ -406,8 +406,8 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
     /* wait for any remainin data */
     if(m_seekPos < iTarget)
     {
-      CLog::Log(LOGDEBUG,"%s - waiting for position %"PRId64".", __FUNCTION__, iTarget);
-      if(m_pCache->WaitForData((unsigned)(iTarget - m_seekPos), 10000) < iTarget - m_seekPos)
+      CLog::Log(LOGINFO,"%s - waiting for position %"PRId64".", __FUNCTION__, iTarget);
+      if(m_pCache->WaitForData((unsigned)(iTarget - m_seekPos), 2000) < iTarget - m_seekPos)
       {
         CLog::Log(LOGWARNING,"%s - failed to get remaining data", __FUNCTION__);
         return -1;
