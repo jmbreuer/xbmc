@@ -1808,7 +1808,7 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
 	av_log(s, AV_LOG_INFO, "ts_min = ff_read_timestamp()\n");
         pos_min = s->data_offset;
         ts_min = ff_read_timestamp(s, stream_index, &pos_min, INT64_MAX, read_timestamp);
-	last_min_s = s;
+        last_min_s = s;
         last_pos_min = pos_min;
         last_ts_min = ts_min;
         }
@@ -1843,8 +1843,8 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
         for(;;){
             int64_t tmp_pos= pos_max + 1;
             int64_t tmp_ts;
-	    
-	    av_log(s, AV_LOG_INFO, "tmp_ts = ff_read_timestamp()\n");
+
+            av_log(s, AV_LOG_INFO, "tmp_ts = ff_read_timestamp()\n");
             tmp_ts= ff_read_timestamp(s, stream_index, &tmp_pos, INT64_MAX, read_timestamp);
             if(tmp_ts == AV_NOPTS_VALUE)
                 break;
