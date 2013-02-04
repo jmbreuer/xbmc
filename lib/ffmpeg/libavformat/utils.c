@@ -1755,7 +1755,9 @@ int ff_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
 
     // last_st = st;
 
-    av_log(s, AV_LOG_INFO, "seek: performing ff_gen_search to %ld, current dts %ld, last IP pts\n", target_ts, st->cur_dts, st->last_IP_pts);
+    pos = s->pb->pos;
+
+    av_log(s, AV_LOG_INFO, "seek: performing ff_gen_search to %ld, current pos %ld, current ts %ld\n", target_ts, s->pb->pos, ff_read_timestamp(s, stream_index, &pos, INT64_MAX, avif->read_timestamp));
 
     pos= ff_gen_search(s, stream_index, target_ts, pos_min, pos_max, pos_limit, ts_min, ts_max, flags, &ts, avif->read_timestamp);
     if(pos<0)
@@ -1874,7 +1876,7 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
 
     no_change=0;
     while (pos_min < pos_limit) {
-        av_log(s, AV_LOG_INFO, "pos_min=0x%"PRIx64" pos_max=0x%"PRIx64" dts_min=%"PRId64" dts_max=%"PRId64"\n",
+        av_log(s, AV_LOG_INFO, "pos_min=%ld pos_max=%ld dts_min=%"PRId64" dts_max=%"PRId64"\n",
                 pos_min, pos_max, ts_min, ts_max);
         assert(pos_limit <= pos_max);
 
