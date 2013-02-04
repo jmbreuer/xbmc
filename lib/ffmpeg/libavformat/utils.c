@@ -1801,6 +1801,10 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
 
     av_log(s, AV_LOG_INFO, "gen_seek: %d %"PRId64"\n", stream_index, target_ts);
 
+    // fetch current pos/ts
+    pos = s->pb->pos;
+    ts = ff_read_timestamp(s, stream_index, &pos, INT64_MAX, read_timestamp);
+
     if(ts_min == AV_NOPTS_VALUE){
 	if (last_min_s == s) {
 	    av_log(s, AV_LOG_INFO, "Using cached ts_min\n");
@@ -1874,10 +1878,25 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
         pos_limit= pos_min;
     }
 
+    // correct pos/ts using current position
+    av_log(s, AV_LOG_INFO, "current pos=%ld, ts=%ld\n", pos, ts);
+    if (target_ts < ts) {
+      // target is between min and cur
+      av_log(s, AV_LOG_INFO, "correcting max\n", pos, ts);
+      pos_max = pos;
+      pos_limit = pos_max;
+      ts_max = ts;
+    } else {
+      // target is between cur and max
+      av_log(s, AV_LOG_INFO, "correcting min\n", pos, ts);
+      pos_min = pos;
+      ts_min = ts;
+    }
+
     no_change=0;
     while (pos_min < pos_limit) {
-        av_log(s, AV_LOG_INFO, "pos_min=%ld pos_max=%ld dts_min=%"PRId64" dts_max=%"PRId64"\n",
-                pos_min, pos_max, ts_min, ts_max);
+        av_log(s, AV_LOG_INFO, "pos_min=%ld pos_max=%ld  pos_limit=%ld dts_min=%"PRId64" dts_max=%"PRId64"\n",
+                pos_min, pos_max, pos_limit, ts_min, ts_max);
         assert(pos_limit <= pos_max);
 
         if(no_change==0){
