@@ -34,6 +34,7 @@
 #include "DetectDVDType.h"
 #include "filesystem/iso9660.h"
 #endif
+#include "cores/dvdplayer/DVDInputStreams/DVDInputStreamNavigator.h"
 #endif
 #include "Autorun.h"
 #include "GUIUserMessages.h"
@@ -550,6 +551,13 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
 {
   CFileItemList vecItemsTS;
   bool success = false;
+
+  // initialize CSS (if applicable) to get consistent hash values
+  // independent of whether CSS was already performed on this drive or not
+  CDVDInputStreamNavigator* dvdNavigator = new CDVDInputStreamNavigator(NULL);
+  std::string dvdMimeType;
+  dvdNavigator->Open(g_mediaManager.TranslateDevicePath(""), dvdMimeType);
+  dvdNavigator->Close();
 
   // first try to open the VIDEO_TS folder of the DVD
   if (!CDirectory::GetDirectory( dvdpath, vecItemsTS, ".ifo" ))
