@@ -9,6 +9,7 @@ testMain
 *.cproject
 .classpath
 *.sublime-*
+.autotools
 
 # generated files etc
 config.cache
