@@ -1865,7 +1865,7 @@ bool CVideoDatabase::GetFileInfo(const CStdString& strFilenameAndPath, CVideoInf
   try
   {
     if (idFile < 0)
-      idFile = GetFileId(strFilenameAndPath);
+      idFile = GetFileId((details.m_strFileNameAndPath.Find("removable://") == 0) ? details.m_strFileNameAndPath : strFilenameAndPath);
     if (idFile < 0)
       return false;
 
