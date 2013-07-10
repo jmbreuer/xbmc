@@ -195,10 +195,11 @@ int64_t CCircularCache::Seek(int64_t pos)
 
   // if seek is a bit over what we have, try to wait a few seconds for the data to be available.
   // we try to avoid a (heavy) seek on the source
-  if (pos >= m_end && pos < m_end + 100000)
+  if (pos >= m_end && pos < m_end + m_size/64)
   {
     lock.Leave();
-    WaitForData((size_t)(pos - m_cur), 5000);
+    CLog::Log(LOGINFO,"%s - waiting for position %"PRId64".", __FUNCTION__, pos);
+    WaitForData((size_t)(pos - m_cur), 1000);
     lock.Enter();
   }
 

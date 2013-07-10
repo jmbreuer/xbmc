@@ -1792,7 +1792,7 @@ int ff_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
     if (stream_index < 0)
         return -1;
 
-    av_dlog(s, "read_seek: %d %s\n", stream_index, av_ts2str(target_ts));
+    av_log(s, AV_LOG_INFO, "read_seek: %d %"PRId64"\n", stream_index, target_ts);
 
     ts_max=
     ts_min= AV_NOPTS_VALUE;
@@ -1801,6 +1801,8 @@ int ff_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
     st= s->streams[stream_index];
     if(st->index_entries){
         AVIndexEntry *e;
+
+        av_log(s, AV_LOG_INFO, "seek: trying to use index\n");
 
         index= av_index_search_timestamp(st, target_ts, flags | AVSEEK_FLAG_BACKWARD); //FIXME whole func must be checked for non-keyframe entries in index case, especially read_timestamp()
         index= FFMAX(index, 0);
@@ -1828,9 +1830,17 @@ int ff_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
         }
     }
 
+    // last_st = st;
+
+    pos = s->pb->pos;
+
+    av_log(s, AV_LOG_INFO, "seek: performing ff_gen_search to %ld, current pos %ld, current ts %ld\n", target_ts, s->pb->pos, ff_read_timestamp(s, stream_index, &pos, INT64_MAX, avif->read_timestamp));
+
     pos= ff_gen_search(s, stream_index, target_ts, pos_min, pos_max, pos_limit, ts_min, ts_max, flags, &ts, avif->read_timestamp);
     if(pos<0)
         return -1;
+
+    av_log(s, AV_LOG_INFO, "performing avio_seek: %ld\n", pos);
 
     /* do the seek */
     if ((ret = avio_seek(s->pb, pos, SEEK_SET)) < 0)
@@ -1842,20 +1852,38 @@ int ff_seek_frame_binary(AVFormatContext *s, int stream_index, int64_t target_ts
     return 0;
 }
 
+static AVFormatContext *last_min_s = NULL, *last_max_s = NULL;
+static int64_t last_ts_min = -1, last_pos_min = -1, last_ts_max = -1, last_pos_max = -1;
+
 int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
                       int64_t pos_min, int64_t pos_max, int64_t pos_limit,
                       int64_t ts_min, int64_t ts_max, int flags, int64_t *ts_ret,
                       int64_t (*read_timestamp)(struct AVFormatContext *, int , int64_t *, int64_t ))
 {
     int64_t pos, ts;
-    int64_t start_pos, filesize;
+    int64_t start_pos = -1, filesize;
     int no_change;
 
-    av_dlog(s, "gen_seek: %d %s\n", stream_index, av_ts2str(target_ts));
+    av_log(s, AV_LOG_INFO, "gen_seek: %d %"PRId64"\n", stream_index, target_ts);
+
+    // fetch current pos/ts
+    pos = s->pb->pos;
+    ts = ff_read_timestamp(s, stream_index, &pos, INT64_MAX, read_timestamp);
 
     if(ts_min == AV_NOPTS_VALUE){
+	if (last_min_s == s) {
+	    av_log(s, AV_LOG_INFO, "Using cached ts_min\n");
+	    pos_min = last_pos_min;
+	    ts_min = last_ts_min;
+	} else {
+	av_log(s, AV_LOG_INFO, "ts_min = ff_read_timestamp()\n");
         pos_min = s->data_offset;
         ts_min = ff_read_timestamp(s, stream_index, &pos_min, INT64_MAX, read_timestamp);
+        last_min_s = s;
+        last_pos_min = pos_min;
+        last_ts_min = ts_min;
+        }
+	av_log(s, AV_LOG_INFO, "gen_seek ts_min = %ld\n", ts_min);
         if (ts_min == AV_NOPTS_VALUE)
             return -1;
     }
@@ -1869,8 +1897,14 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
         int step= 1024;
         filesize = avio_size(s->pb);
         pos_max = filesize - 1;
+	if (last_max_s == s) {
+	    av_log(s, AV_LOG_INFO, "Using cached ts_max\n");
+	    pos_max = last_pos_max;
+	    ts_max = last_ts_max;
+	} else {
         do{
             pos_max = FFMAX(0, pos_max - step);
+	    av_log(s, AV_LOG_INFO, "ts_max = ff_read_timestamp()\n");
             ts_max = ff_read_timestamp(s, stream_index, &pos_max, pos_max + step, read_timestamp);
             step += step;
         }while(ts_max == AV_NOPTS_VALUE && pos_max > 0);
@@ -1879,7 +1913,10 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
 
         for(;;){
             int64_t tmp_pos= pos_max + 1;
-            int64_t tmp_ts= ff_read_timestamp(s, stream_index, &tmp_pos, INT64_MAX, read_timestamp);
+            int64_t tmp_ts;
+
+            av_log(s, AV_LOG_INFO, "tmp_ts = ff_read_timestamp()\n");
+            tmp_ts= ff_read_timestamp(s, stream_index, &tmp_pos, INT64_MAX, read_timestamp);
             if(tmp_ts == AV_NOPTS_VALUE)
                 break;
             ts_max= tmp_ts;
@@ -1887,6 +1924,11 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
             if(tmp_pos >= filesize)
                 break;
         }
+	av_log(s, AV_LOG_INFO, "gen_seek ts_max = %ld\n", ts_max);
+	last_max_s = s;
+	last_pos_max = pos_max;
+	last_ts_max = ts_max;
+	}
         pos_limit= pos_max;
     }
 
@@ -1901,10 +1943,25 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
         pos_limit= pos_min;
     }
 
+    // correct pos/ts using current position
+    av_log(s, AV_LOG_INFO, "current pos=%ld, ts=%ld\n", pos, ts);
+    if (target_ts < ts) {
+      // target is between min and cur
+      av_log(s, AV_LOG_INFO, "correcting max\n", pos, ts);
+      pos_max = pos;
+      pos_limit = pos_max;
+      ts_max = ts;
+    } else {
+      // target is between cur and max
+      av_log(s, AV_LOG_INFO, "correcting min\n", pos, ts);
+      pos_min = pos;
+      ts_min = ts;
+    }
+
     no_change=0;
     while (pos_min < pos_limit) {
-        av_dlog(s, "pos_min=0x%"PRIx64" pos_max=0x%"PRIx64" dts_min=%s dts_max=%s\n",
-                pos_min, pos_max, av_ts2str(ts_min), av_ts2str(ts_max));
+        av_log(s, AV_LOG_INFO, "pos_min=%ld pos_max=%ld  pos_limit=%ld dts_min=%"PRId64" dts_max=%"PRId64"\n",
+                pos_min, pos_max, pos_limit, ts_min, ts_max);
         assert(pos_limit <= pos_max);
 
         if(no_change==0){
@@ -1926,14 +1983,14 @@ int64_t ff_gen_search(AVFormatContext *s, int stream_index, int64_t target_ts,
             pos= pos_limit;
         start_pos= pos;
 
+	av_log(s, AV_LOG_INFO, "ts = ff_read_timestamp()\n");
         ts = ff_read_timestamp(s, stream_index, &pos, INT64_MAX, read_timestamp); //may pass pos_limit instead of -1
         if(pos == pos_max)
             no_change++;
         else
             no_change=0;
-        av_dlog(s, "%"PRId64" %"PRId64" %"PRId64" / %s %s %s target:%s limit:%"PRId64" start:%"PRId64" noc:%d\n",
-                pos_min, pos, pos_max,
-                av_ts2str(ts_min), av_ts2str(ts), av_ts2str(ts_max), av_ts2str(target_ts),
+        av_log(s, AV_LOG_INFO, "%"PRId64" %"PRId64" %"PRId64" / %"PRId64" %"PRId64" %"PRId64" target:%"PRId64" limit:%"PRId64" start:%"PRId64" noc:%d\n",
+                pos_min, pos, pos_max, ts_min, ts, ts_max, target_ts,
                 pos_limit, start_pos, no_change);
         if(ts == AV_NOPTS_VALUE){
             av_log(s, AV_LOG_ERROR, "read_timestamp() failed in the middle\n");
