@@ -1,0 +1,2 @@
+PYTHON_VERSION=2 ./configure --disable-optimizations --disable-mysql
+--disable-webserver --enable-dependency-tracking
