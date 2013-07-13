@@ -565,15 +565,6 @@ int CCdIoSupport::GuessFilesystem(int start_session, track_t track_num)
   bool udf = false;
 
   memset(&anal, 0, sizeof(anal));
-  discmode_t mode = ::cdio_get_discmode(cdio);
-  if (::cdio_is_discmode_dvd(mode))
-  {
-    m_strDiscLabel = "";
-    m_nIsofsSize = ::cdio_get_disc_last_lsn(cdio);
-    m_nJolietLevel = ::cdio_get_joliet_level(cdio);
-
-    return FS_ISO_9660;
-  }
 
   fs = ::cdio_guess_cd_type(cdio, start_session, track_num, &anal);
 
