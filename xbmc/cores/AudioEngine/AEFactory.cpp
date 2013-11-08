@@ -375,6 +375,7 @@ void CAEFactory::SettingOptionsAudioStreamsilenceFiller(const CSetting *setting,
   if (!AE)
     return;
 
+  list.push_back(std::make_pair("Always w/ digital zero", XbmcThreads::EndTime::InfiniteValue-1));
   list.push_back(std::make_pair(g_localizeStrings.Get(20422), XbmcThreads::EndTime::InfiniteValue));
   list.push_back(std::make_pair(g_localizeStrings.Get(13551), 0));
 

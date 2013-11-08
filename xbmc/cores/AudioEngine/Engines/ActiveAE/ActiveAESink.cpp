@@ -270,8 +270,13 @@ void CActiveAESink::StateMachine(int signal, Protocol *port, Message *msg)
           silencemode = *(bool*)msg->data;
           if (silencemode)
             m_extSilenceTimeout = XbmcThreads::EndTime::InfiniteValue;
-          else
-            m_extSilenceTimeout = CSettings::Get().GetInt("audiooutput.streamsilence") * 60000;
+          else {
+        	int silenceTimeout = CSettings::Get().GetInt("audiooutput.streamsilence");
+        	if (silenceTimeout < 0)
+              m_extSilenceTimeout = XbmcThreads::EndTime::InfiniteValue;
+        	else
+       	      m_extSilenceTimeout = silenceTimeout * 60000;
+          }
           m_extSilenceTimer.Set(m_extSilenceTimeout);
           if (!m_extSilenceTimer.IsTimePast())
           {
@@ -647,6 +652,8 @@ void CActiveAESink::OpenSink()
   std::string device = m_device;
   std::string driver;
   bool passthrough = AE_IS_RAW(m_requestedFormat.m_dataFormat);
+  unsigned int streamsilence = CSettings::Get().GetInt("audiooutput.streamsilence");
+  bool zeroSilence = (streamsilence == XbmcThreads::EndTime::InfiniteValue-1);
 
   CAESinkFactory::ParseDevice(device, driver);
   if (driver.empty() && m_sink)
@@ -732,8 +739,11 @@ void CActiveAESink::OpenSink()
   delete m_sampleOfSilence.pkt;
   m_sampleOfSilence.pkt = new CSoundPacket(config, m_sinkFormat.m_frames);
   m_sampleOfSilence.pkt->nb_samples = m_sampleOfSilence.pkt->max_nb_samples;
-  if (!passthrough)
+  if (!passthrough && !zeroSilence)
     GenerateNoise();
+  else
+    CLog::Log(LOGDEBUG, "CActiveAE::OpenSink - true silence enabled");
+
 
   if (m_convertBuffer)
   {
@@ -880,6 +890,8 @@ void CActiveAESink::GenerateNoise()
     while(R1 == 0.0f);
     
     noise[i] = (float) sqrt( -2.0f * log( R1 )) * cos( 2.0f * PI * R2 ) * 0.00001f;
+
+    CLog::Log(LOGDEBUG, "CActiveAESink::GenerateNoise %f", noise[i]);
   }
 
   AEDataFormat fmt = CActiveAEResample::GetAESampleFormat(m_sampleOfSilence.pkt->config.fmt, m_sampleOfSilence.pkt->config.bits_per_sample);
