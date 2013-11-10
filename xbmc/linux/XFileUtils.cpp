@@ -504,7 +504,7 @@ BOOL WriteFile(HANDLE hFile, const void * lpBuffer, DWORD nNumberOfBytesToWrite,
 {
   if (lpOverlapped)
   {
-    CLog::Log(LOGERROR, "ReadFile does not support overlapped I/O");
+    CLog::Log(LOGERROR, "WriteFile does not support overlapped I/O");
     return 0;
   }
 
