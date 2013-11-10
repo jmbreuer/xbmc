@@ -272,7 +272,7 @@ bool CFile::Cache(const CStdString& strFileName, const CStdString& strDest, XFIL
 //*********************************************************************************************
 bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
 {
-  m_flags = flags;
+  m_flags = flags; // perhaps this is obsolete now?
   try
   {
     bool bPathInCache;
@@ -308,6 +308,7 @@ bool CFile::Open(const CStdString& strFileName, const unsigned int flags)
         m_flags |= READ_CACHED; // Force cache for all others (in buffer mode 1)
       }
     }
+    m_flags = flags;
 
     if (m_flags & READ_CACHED)
     {
