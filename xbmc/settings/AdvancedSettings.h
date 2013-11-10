@@ -387,6 +387,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     unsigned int m_jsonTcpPort;
 
     bool m_enableMultimediaKeys;
+    int m_keyRepeatDelay;
+    int m_keyRepeatInterval;
+
     std::vector<CStdString> m_settingsFiles;
     void ParseSettingsFile(const CStdString &file);
 

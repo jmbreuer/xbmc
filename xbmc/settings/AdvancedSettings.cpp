@@ -42,6 +42,9 @@
 #if defined(TARGET_DARWIN_IOS)
 #include "osx/DarwinUtils.h"
 #endif
+#ifdef HAS_SDL
+#include "SDL/SDL_keyboard.h"
+#endif
 
 using namespace ADDON;
 using namespace XFILE;
@@ -382,6 +385,8 @@ void CAdvancedSettings::Initialize()
   m_jsonTcpPort = 9090;
 
   m_enableMultimediaKeys = false;
+  m_keyRepeatDelay = SDL_DEFAULT_REPEAT_DELAY;
+  m_keyRepeatInterval = 10;
 
   m_canWindowed = true;
   m_guiVisualizeDirtyRegions = false;
@@ -1172,10 +1177,12 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
   }
 
-  pElement = pRootElement->FirstChildElement("enablemultimediakeys");
+  pElement = pRootElement->FirstChildElement("input");
   if (pElement)
   {
     XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
+    XMLUtils::GetInt(pElement, "keyrepeatdelay", m_keyRepeatDelay);
+    XMLUtils::GetInt(pElement, "keyrepeatinterval", m_keyRepeatInterval);
   }
   
   pElement = pRootElement->FirstChildElement("gui");

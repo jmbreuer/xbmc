@@ -24,6 +24,7 @@
 
 #include <SDL/SDL_syswm.h>
 #include "WinSystemX11.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/DisplaySettings.h"
 #include "settings/Settings.h"
 #include "settings/lib/Setting.h"
@@ -72,7 +73,8 @@ bool CWinSystemX11::InitWindowSystem()
     SDL_EnableUNICODE(1);
     // set repeat to 10ms to ensure repeat time < frame time
     // so that hold times can be reliably detected
-    SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY, 10);
+    CLog::Log(LOGDEBUG, "Keyboard repeat init: %d/%d", g_advancedSettings.m_keyRepeatDelay, g_advancedSettings.m_keyRepeatInterval);
+    SDL_EnableKeyRepeat(g_advancedSettings.m_keyRepeatDelay, g_advancedSettings.m_keyRepeatInterval);
 
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);

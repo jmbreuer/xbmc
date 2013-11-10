@@ -285,6 +285,8 @@ bool CWinEventsSDL::MessagePump()
           newEvent.key.keysym.sym = (XBMCKey) SymFromScancode(newEvent.key.keysym.scancode);
 #endif
 
+        CLog::Log(LOGDEBUG, "CWinEventsSDL:: SDL_KEYDOWN 0x%x 0x%x", newEvent.key.keysym.scancode, newEvent.key.keysym.sym);
+
         // don't handle any more messages in the queue until we've handled keydown,
         // if a keyup is in the queue it will reset the keypress before it is handled.
         ret |= g_application.OnEvent(newEvent);
@@ -302,6 +304,8 @@ bool CWinEventsSDL::MessagePump()
         newEvent.key.state = event.key.state;
         newEvent.key.type = event.key.type;
         newEvent.key.which = event.key.which;
+
+        CLog::Log(LOGDEBUG, "CWinEventsSDL:: SDL_KEYUP 0x%x 0x%x", newEvent.key.keysym.scancode, newEvent.key.keysym.sym);
 
         ret |= g_application.OnEvent(newEvent);
         break;
