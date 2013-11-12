@@ -165,33 +165,33 @@ bool CPlayerController::OnAction(const CAction &action)
       case ACTION_AUDIO_DELAY:
       {
         ShowSlider(action.GetID(), 297, CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay,
-                                        -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
+                                        -g_advancedSettings.m_videoAudioDelayRange, 0.005f,
                                          g_advancedSettings.m_videoAudioDelayRange, true);
         return true;
       }
 
       case ACTION_AUDIO_DELAY_MIN:
       {
-        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay -= 0.025f;
+        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay -= 0.005f;
         if (CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay < -g_advancedSettings.m_videoAudioDelayRange)
           CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay = -g_advancedSettings.m_videoAudioDelayRange;
         g_application.m_pPlayer->SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay,
-                                        -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
+                                        -g_advancedSettings.m_videoAudioDelayRange, 0.005f,
                                          g_advancedSettings.m_videoAudioDelayRange);
         return true;
       }
 
       case ACTION_AUDIO_DELAY_PLUS:
       {
-        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay += 0.025f;
+        CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay += 0.005f;
         if (CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay > g_advancedSettings.m_videoAudioDelayRange)
           CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay = g_advancedSettings.m_videoAudioDelayRange;
         g_application.m_pPlayer->SetAVDelay(CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay);
 
         ShowSlider(action.GetID(), 297, CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay,
-                                        -g_advancedSettings.m_videoAudioDelayRange, 0.025f,
+                                        -g_advancedSettings.m_videoAudioDelayRange, 0.005f,
                                          g_advancedSettings.m_videoAudioDelayRange);
         return true;
       }
@@ -424,7 +424,7 @@ void CPlayerController::OnSliderChange(void *data, CGUISliderControl *slider)
   else if (m_sliderAction == ACTION_VOLAMP_UP || m_sliderAction == ACTION_VOLAMP_DOWN)
     slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDecibel(slider->GetFloatValue(), 1.0f));
   else
-    slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.025f));
+    slider->SetTextValue(CGUIDialogAudioSubtitleSettings::FormatDelay(slider->GetFloatValue(), 0.005f));
 
   if (g_application.m_pPlayer->HasPlayer())
   {

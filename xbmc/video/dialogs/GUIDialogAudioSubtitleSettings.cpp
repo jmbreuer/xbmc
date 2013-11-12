@@ -93,7 +93,7 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
     EnableSettings(AUDIO_SETTINGS_VOLUME_AMPLIFICATION,false);
   }
   if (SupportsAudioFeature(IPC_AUD_OFFSET))
-    AddSlider(AUDIO_SETTINGS_DELAY, 297, &CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .025f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
+    AddSlider(AUDIO_SETTINGS_DELAY, 297, &CMediaSettings::Get().GetCurrentVideoSettings().m_AudioDelay, -g_advancedSettings.m_videoAudioDelayRange, .005f, g_advancedSettings.m_videoAudioDelayRange, FormatDelay);
   if (SupportsAudioFeature(IPC_AUD_SELECT_STREAM))
     AddAudioStreams(AUDIO_SETTINGS_STREAM);
 
