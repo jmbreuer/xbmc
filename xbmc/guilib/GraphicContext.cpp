@@ -33,6 +33,7 @@
 #include "input/MouseStat.h"
 #include "GUIWindowManager.h"
 #include "utils/JobManager.h"
+#include "utils/log.h"
 #include "video/VideoReferenceClock.h"
 #include "cores/IPlayer.h"
 
@@ -370,28 +371,46 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   // If the user asked us to guess, go with desktop
   if (res == RES_AUTORES || !IsValidResolution(res))
   {
+    CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - AUTORES -> DESKTOP");
     res = RES_DESKTOP;
   }
 
   // If we are switching to the same resolution and same window/full-screen, no need to do anything
   if (!forceUpdate && res == lastRes && m_bFullScreenRoot == g_advancedSettings.m_fullScreen)
   {
+    CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - switch to same, !forceUpdate");
     return;
   }
 
   //only pause when switching monitor resolution/refreshrate,
   //not when switching between fullscreen and windowed or when resizing the window
+  CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - res: %d, lastRes: %d vs. %d/%d", res, lastRes, RES_DESKTOP, RES_WINDOW);
   if ((res != RES_DESKTOP && res != RES_WINDOW) || (lastRes != RES_DESKTOP && lastRes != RES_WINDOW))
   {
     //pause the player during the refreshrate change
     int delay = CSettings::Get().GetInt("videoplayer.pauseafterrefreshchange");
-    if (delay > 0 && CSettings::Get().GetInt("videoplayer.adjustrefreshrate") != ADJUST_REFRESHRATE_OFF && g_application.m_pPlayer->IsPlayingVideo() && !g_application.m_pPlayer->IsPausedPlayback())
+    int adjustRefresh = CSettings::Get().GetInt("videoplayer.adjustrefreshrate");
+    CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - delay: %d, adjustRefresh: %d vs. %d, playing: %s, paused: %s",
+       	      delay, adjustRefresh, ADJUST_REFRESHRATE_OFF,
+       	      g_application.m_pPlayer->IsPlayingVideo()?"true":"false",
+        	  g_application.m_pPlayer->IsPausedPlayback()?"true":"false");
+    if (delay > 0 && adjustRefresh != ADJUST_REFRESHRATE_OFF
+				&& g_application.m_pPlayer->IsPlayingVideo())
     {
-      g_application.m_pPlayer->Pause();
+	  CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - resolution switch delay");
+	  if (!g_application.m_pPlayer->IsPausedPlayback()) {
+	    CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - pause from play");
+        g_application.m_pPlayer->Pause();
+	  } else {
+	    CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - pause from wait");
+        g_application.m_pPlayer->Pause();
+        g_application.m_pPlayer->Pause();
+	  }
       ThreadMessage msg = {TMSG_MEDIA_UNPAUSE};
       CDelayedMessage* pauseMessage = new CDelayedMessage(msg, delay * 100);
       pauseMessage->Create(true);
-    }
+    } else
+  	  CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - no delay for switch");
   }
 
   if (res >= RES_DESKTOP)
@@ -438,6 +457,8 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
   m_Resolution    = res;
 
+  CLog::Log(LOGDEBUG, "CGraphicContext::SetVideoResolution - refresh %f, last %f",
+		  info_org.fRefreshRate, info_last.fRefreshRate);
   //tell the videoreferenceclock that we're about to change the refreshrate
   g_VideoReferenceClock.RefreshChanged();
 
