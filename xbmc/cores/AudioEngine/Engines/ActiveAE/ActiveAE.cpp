@@ -1288,6 +1288,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   // raw pass through
   if (AE_IS_RAW(format.m_dataFormat))
   {
+    CLog::Log(LOGDEBUG, "CActiveAE::ApplySettingsToFormat - MODE_RAW");
     if ((format.m_dataFormat == AE_FMT_AC3 && !settings.ac3passthrough) ||
         (format.m_dataFormat == AE_FMT_EAC3 && !settings.eac3passthrough) ||
         (format.m_dataFormat == AE_FMT_TRUEHD && !settings.truehdpassthrough) ||
@@ -1306,6 +1307,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
            !m_streams.empty() &&
            (format.m_channelLayout.Count() > 2 || settings.stereoupmix))
   {
+    CLog::Log(LOGDEBUG, "CActiveAE::ApplySettingsToFormat - MODE_TRANSCODE");
     format.m_dataFormat = AE_FMT_AC3;
     format.m_sampleRate = 48000;
     format.m_channelLayout = AE_CH_LAYOUT_2_0;
@@ -1314,6 +1316,7 @@ void CActiveAE::ApplySettingsToFormat(AEAudioFormat &format, AudioSettings &sett
   }
   else
   {
+    CLog::Log(LOGDEBUG, "CActiveAE::ApplySettingsToFormat - MODE_TRANSCODE");
     format.m_dataFormat = AE_FMT_FLOAT;
     // consider user channel layout for those cases
     // 1. input stream is multichannel
