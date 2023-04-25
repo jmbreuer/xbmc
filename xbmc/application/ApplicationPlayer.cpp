@@ -748,6 +748,13 @@ void CApplicationPlayer::SetSubTitleDelay(float fValue)
     player->SetSubTitleDelay(fValue);
 }
 
+void CApplicationPlayer::SetSubtitleStretch(ESUBTITLESTRETCH value)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetSubtitleStretch(value);
+}
+
 void CApplicationPlayer::SetAVDelay(float fValue)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
