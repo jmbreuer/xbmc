@@ -282,6 +282,8 @@ public:
 
   void SetSubTitleDelay(float fValue = 0.0f) override;
   float GetSubTitleDelay() override;
+  void SetSubtitleStretch(ESUBTITLESTRETCH value) override;
+  ESUBTITLESTRETCH GetSubtitleStretch() override;
   int GetSubtitleCount() const override;
   int GetSubtitle() override;
   void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const override;
