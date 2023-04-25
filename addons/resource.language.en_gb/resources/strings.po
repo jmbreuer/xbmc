@@ -24288,6 +24288,12 @@ msgctxt "#39206"
 msgid "CC"
 msgstr ""
 
+#empty strings from id 39207 to 39999
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#39207"
+msgid "Subtitle frame rate correction"
+msgstr ""
+
 # Use Starfish decoder
 #: system/settings/linux.xml
 msgctxt "#39207"
@@ -24313,6 +24319,12 @@ msgid "If enabled, Dolby Vision files will have level 5 (active area) metadata o
 msgstr ""
 
 #empty strings from id 39211 to 39999
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#39211"
+msgid "Subtitle frame rate correction"
+msgstr ""
+
+#empty strings from id 39210 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
