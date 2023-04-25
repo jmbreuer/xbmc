@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "cores/IPlayer.h"
 #include "cores/VideoPlayer/Interface/StreamInfo.h"
 #include "settings/dialogs/GUIDialogSettingsManualBase.h"
 
