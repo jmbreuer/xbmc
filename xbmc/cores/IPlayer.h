@@ -65,7 +65,8 @@ enum IPlayerSubtitleCapabilities
   IPC_SUBS_ALL,
   IPC_SUBS_SELECT,
   IPC_SUBS_EXTERNAL,
-  IPC_SUBS_OFFSET
+  IPC_SUBS_OFFSET,
+  IPC_SUBS_STRETCH
 };
 
 enum ERENDERFEATURE
@@ -118,6 +119,8 @@ public:
 
   virtual void SetSubTitleDelay(float fValue = 0.0f) {}
   virtual float GetSubTitleDelay()    { return 0.0f; }
+  virtual void SetSubtitleStretch(ESUBTITLESTRETCH value = ST_STRETCH_NONE) {}
+  virtual ESUBTITLESTRETCH GetSubtitleStretch() { return ST_STRETCH_NONE; }
   virtual int GetSubtitleCount() const { return 0; }
   virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleStreamInfo(int index, SubtitleStreamInfo& info) const {}
@@ -218,7 +221,7 @@ public:
   /*!
    \brief define the subtitle capabilities of the player
    */
-  virtual void GetSubtitleCapabilities(std::vector<int>& subCaps) const
+  virtual void GetSubtitleCapabilities(std::vector<IPlayerSubtitleCapabilities>& subCaps) const
   {
     subCaps.assign(1, IPC_SUBS_ALL);
   }
