@@ -737,6 +737,13 @@ void CApplicationPlayer::SetSubTitleDelay(float fValue)
     player->SetSubTitleDelay(fValue);
 }
 
+void CApplicationPlayer::SetSubtitleStretch(ESUBTITLESTRETCH value)
+{
+  std::shared_ptr<IPlayer> player = GetInternal();
+  if (player)
+    player->SetSubtitleStretch(value);
+}
+
 void CApplicationPlayer::SetAVDelay(float fValue)
 {
   std::shared_ptr<IPlayer> player = GetInternal();
@@ -765,7 +772,7 @@ void CApplicationPlayer::GetAudioCapabilities(std::vector<int>& audioCaps) const
     player->GetAudioCapabilities(audioCaps);
 }
 
-void CApplicationPlayer::GetSubtitleCapabilities(std::vector<int>& subCaps) const
+void CApplicationPlayer::GetSubtitleCapabilities(std::vector<IPlayerSubtitleCapabilities>& subCaps) const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
