@@ -24276,6 +24276,12 @@ msgid "CC"
 msgstr ""
 
 #empty strings from id 39207 to 39999
+#: xbmc/dialogs/GUIDialogSubtitles.cpp
+msgctxt "#39207"
+msgid "Subtitle frame rate correction"
+msgstr ""
+
+#empty strings from id 39207 to 39999
 
 # 40000 to 40800 are reserved for Video Versions feature
 
