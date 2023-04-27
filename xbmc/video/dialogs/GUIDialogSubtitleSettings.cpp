@@ -114,7 +114,8 @@ void CGUIDialogSubtitleSettings::OnSettingChanged(const std::shared_ptr<const CS
   }
   else if (settingId == SETTING_SUBTITLE_FPS)
   {
-    ESUBTITLEFPS value = static_cast<ESUBTITLEFPS>(std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
+    ESUBTITLEFPS value = static_cast<ESUBTITLEFPS>(
+        std::static_pointer_cast<const CSettingInt>(setting)->GetValue());
     appPlayer->SetSubtitleFPS(value);
   }
   else if (settingId == SETTING_SUBTITLE_STREAM)
@@ -308,7 +309,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
     std::shared_ptr<CSettingNumber> settingSubtitleDelay = AddSlider(groupSubtitles, SETTING_SUBTITLE_DELAY, 22006, SettingLevel::Basic, videoSettings.m_SubtitleDelay, 0, -CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 0.1f, CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_videoSubsDelayRange, 22006, usePopup);
     std::static_pointer_cast<CSettingControlSlider>(settingSubtitleDelay->GetControl())->SetFormatter(SettingFormatterDelay);
   }
-  
+
   if (SupportsSubtitleFeature(IPC_SUBS_STRETCH))
   {
     IntegerSettingOptions entries;
@@ -318,7 +319,8 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
     entries.push_back(IntegerSettingOption(fmt::format("{}", ST_FPS_24), ST_FPS_24));
     entries.push_back(IntegerSettingOption(fmt::format("{}", ST_FPS_25), ST_FPS_25));
   
-    AddSpinner(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic, videoSettings.m_subtitleFPS, entries);
+    AddSpinner(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic,
+               videoSettings.m_subtitleFPS, entries);
   }
 
   // subtitle stream setting
