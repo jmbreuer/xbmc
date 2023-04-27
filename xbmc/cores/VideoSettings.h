@@ -199,11 +199,10 @@ public:
   }
 
 private:
-  static constexpr auto subtitleFPSMap = make_map<ESUBTITLEFPS, std::string_view>({
-      {ST_FPS_SAME, "Same as video"},
-      {ST_FPS_24, "24 fps"},
-      {ST_FPS_25, "25 fps"}
-  });
+  static constexpr auto subtitleFPSMap =
+      make_map<ESUBTITLEFPS, std::string_view>({{ST_FPS_SAME, "Same as video"},
+                                                {ST_FPS_24, "24 fps"},
+                                                {ST_FPS_25, "25 fps"}});
 };
 
 enum ViewMode
