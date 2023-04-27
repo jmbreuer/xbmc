@@ -58,7 +58,8 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_AudioStream != right.m_AudioStream) return true;
   if (m_SubtitleStream != right.m_SubtitleStream) return true;
   if (m_SubtitleDelay != right.m_SubtitleDelay) return true;
-  if (m_subtitleFPS != right.m_subtitleFPS) return true;
+  if (m_subtitleFPS != right.m_subtitleFPS)
+    return true;
   if (m_subtitleVerticalPosition != right.m_subtitleVerticalPosition)
     return true;
   if (m_subtitleVerticalPositionSave != right.m_subtitleVerticalPositionSave)

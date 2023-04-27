@@ -783,7 +783,8 @@ void CApplicationPlayer::GetAudioCapabilities(std::vector<IPlayerAudioCaps>& cap
     player->GetAudioCapabilities(caps);
 }
 
-void CApplicationPlayer::GetSubtitleCapabilities(std::vector<IPlayerSubtitleCaps>& caps) const
+void CApplicationPlayer::GetSubtitleCapabilities(
+    std::vector<IPlayerSubtitleCaps>& caps) const
 {
   const std::shared_ptr<const IPlayer> player = GetInternal();
   if (player)
