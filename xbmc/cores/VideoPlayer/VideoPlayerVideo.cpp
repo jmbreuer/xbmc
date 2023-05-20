@@ -63,7 +63,7 @@ CVideoPlayerVideo::CVideoPlayerVideo(CDVDClock* pClock
   m_paused = false;
   m_syncState = IDVDStreamPlayer::SYNC_STARTING;
   m_iSubtitleDelay = 0;
-  m_subtitleStretch = 1.0;
+  m_subtitleFPS = 0.0f; 
   m_iLateFrames = 0;
   m_iDroppedRequest = 0;
   m_fForcedAspectRatio = 0;
@@ -803,7 +803,7 @@ void CVideoPlayerVideo::Flush(bool sync)
 
 void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
-  double pts1 = pts * m_subtitleStretch;
+  double pts1 = (m_subtitleFPS == 0.0) ? pts : pts * (m_fFrameRate/m_subtitleFPS);
 
   // remove any overlays that are out of time
   if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)

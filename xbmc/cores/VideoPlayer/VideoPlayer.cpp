@@ -3347,37 +3347,24 @@ float CVideoPlayer::GetSubTitleDelay()
   return (float) -m_VideoPlayerVideo->GetSubtitleDelay() / DVD_TIME_BASE;
 }
 
-void CVideoPlayer::SetSubtitleStretch(ESUBTITLESTRETCH value)
+void CVideoPlayer::SetSubtitleFPS(ESUBTITLEFPS value)
 {
-  m_processInfo->GetVideoSettingsLocked().SetSubtitleStretch(value);
-  float fValue = 1.0;
-  // possibly use 23.97whatever instead?
-  switch (value) {
-    case ST_STRETCH_NONE:
-      fValue = 1.0f;
-      break;
-    case ST_STRETCH_2425:
-      fValue = 25.0f / 24.0f;
-      break;
-    case ST_STRETCH_2524:
-      fValue = 24.0f / 25.0f;
-      break;
-  }
-  m_VideoPlayerVideo->SetSubtitleStretch(fValue);
+  m_processInfo->GetVideoSettingsLocked().SetSubtitleFPS(value);
+  double dValue = 0.0f;
+  if (value != ST_FPS_SAME)
+    dValue = ((int)value) / 1000.0;
+  m_VideoPlayerVideo->SetSubtitleFPS(dValue);
 }
 
-ESUBTITLESTRETCH CVideoPlayer::GetSubtitleStretch()
+ESUBTITLEFPS CVideoPlayer::GetSubtitleFPS()
 {
-  // return m_processInfo->GetVideoSettings().m_subtitleStretch;
-  float stretch = m_VideoPlayerVideo->GetSubtitleStretch();
-  // simplistic implementation, should properly have acceptance ranges for each setting
-  if (stretch == 1.0f)
-    return ST_STRETCH_NONE;
-  if (stretch > 1.0f)
-    return ST_STRETCH_2425;
-  if (stretch < 1.0f)
-    return ST_STRETCH_2524;
-  return ST_STRETCH_NONE;
+  // return m_processInfo->GetVideoSettings().m_subtitleFPS;
+  double dValue = m_VideoPlayerVideo->GetSubtitleFPS();
+  // simplistic implementation, could properly have acceptance ranges for each setting or such
+  if (dValue == 0.0)
+    return ST_FPS_SAME;
+  else
+    return static_cast<ESUBTITLEFPS>((int)(dValue*1000.0));
 }
 
 bool CVideoPlayer::GetSubtitleVisible() const
