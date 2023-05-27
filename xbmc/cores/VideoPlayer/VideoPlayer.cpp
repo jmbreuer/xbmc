@@ -3382,7 +3382,7 @@ float CVideoPlayer::GetSubTitleDelay()
 void CVideoPlayer::SetSubtitleFPS(ESUBTITLEFPS value)
 {
   m_processInfo->GetVideoSettingsLocked().SetSubtitleFPS(value);
-  double dValue = 0.0f;
+  double dValue = 0.0;
   if (value != ST_FPS_SAME)
     dValue = ((int)value) / 1000.0;
   m_VideoPlayerVideo->SetSubtitleFPS(dValue);
@@ -3396,7 +3396,7 @@ ESUBTITLEFPS CVideoPlayer::GetSubtitleFPS()
   if (dValue == 0.0)
     return ST_FPS_SAME;
   else
-    return static_cast<ESUBTITLEFPS>((int)(dValue*1000.0));
+    return static_cast<ESUBTITLEFPS>((int)(dValue * 1000.0));
 }
 
 bool CVideoPlayer::GetSubtitleVisible() const
