@@ -97,7 +97,7 @@ public:
   std::string GetPlayerState();
   KODI::PLAYLIST::Id GetPreferredPlaylist() const;
   int GetSubtitleDelay() const;
-  ESUBTITLEFPS GetSubtitleFPS() const;
+  SubtitleFPS GetSubtitleFPS() const;
   int GetSubtitle();
   void GetSubtitleCapabilities(std::vector<IPlayerSubtitleCapabilities>& subCaps) const;
   int GetSubtitleCount() const;
@@ -155,7 +155,7 @@ public:
   bool SetPlayerState(const std::string& state);
   void SetSubtitle(int iStream);
   void SetSubTitleDelay(float fValue = 0.0f);
-  void SetSubtitleFPS(ESUBTITLEFPS value);
+  void SetSubtitleFPS(SubtitleFPS value);
   void SetSubtitleVisible(bool bVisible);
 
   /*!
