@@ -320,7 +320,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
     entries.push_back(IntegerSettingOption(fmt::format("{}", ((int)SubtitleFPS::FPS_25)/1000.0), (int)SubtitleFPS::FPS_25));
 
     AddSpinner(groupSubtitles, SETTING_SUBTITLE_FPS, 39198, SettingLevel::Basic,
-               videoSettings.m_subtitleFPS, entries);
+               (int)(videoSettings.m_subtitleFPS*1000), entries);
   }
 
   // subtitle stream setting
