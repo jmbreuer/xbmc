@@ -804,7 +804,10 @@ void CVideoPlayerVideo::Flush(bool sync)
 
 void CVideoPlayerVideo::ProcessOverlays(const VideoPicture* pSource, double pts)
 {
-  double pts1 = (m_subtitleFPS == 0.0) ? pts : pts * (m_fFrameRate / m_subtitleFPS);
+  double stFrameRate = m_fFrameRate;
+  while (stFrameRate > 44.0)
+    stFrameRate /= 2.0;
+  double pts1 = (m_subtitleFPS == 0.0) ? pts : pts * (stFrameRate / m_subtitleFPS);
 
   // remove any overlays that are out of time
   if (m_syncState == IDVDStreamPlayer::SYNC_INSYNC)
