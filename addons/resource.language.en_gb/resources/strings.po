@@ -23791,22 +23791,7 @@ msgstr ""
 
 #: xbmc/dialogs/GUIDialogSubtitles.cpp
 msgctxt "#39202"
-msgid "Subtitle frame rate correction"
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogSubtitles.cpp
-msgctxt "#39203"
-msgid "None"
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogSubtitles.cpp
-msgctxt "#39204"
-msgid "24 to 25 fps"
-msgstr ""
-
-#: xbmc/dialogs/GUIDialogSubtitles.cpp
-msgctxt "#39205"
-msgid "25 to 24 fps"
+msgid "Fix 24/25 fps mismatch"
 msgstr ""
 
 
