@@ -53,6 +53,7 @@ private:
 
   int m_subtitleStream;
   bool m_subtitleVisible;
+  bool m_subtitleCompensateFPS;
   std::shared_ptr<CSettingInt> m_subtitleStreamSetting;
 
   std::vector<IPlayerSubtitleCaps> m_subtitleCapabilities;
