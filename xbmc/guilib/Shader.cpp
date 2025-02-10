@@ -39,7 +39,7 @@ bool CShader::LoadSource(const std::string& filename, const std::string& prefix)
   path += filename;
   if(!file.Open(path))
   {
-    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file {}", filename);
+    CLog::Log(LOGERROR, "CYUVShaderGLSL::CYUVShaderGLSL - failed to open file {}", path);
     return false;
   }
   getline(file, m_source, '\0');
