@@ -318,7 +318,7 @@ void CGUIDialogSubtitleSettings::InitializeSettings()
   if (SupportsSubtitleFeature(IPlayerSubtitleCaps::STRETCH))
   {
     m_subtitleCompensateFPS = appPlayer->GetSubtitleCompensateFPS();
-    AddToggle(groupSubtitles, SETTING_SUBTITLE_FPS, 39202, SettingLevel::Basic, m_subtitleCompensateFPS);
+    AddToggle(groupSubtitles, SETTING_SUBTITLE_FPS, 39206, SettingLevel::Basic, m_subtitleCompensateFPS);
   }
 
   // subtitle stream setting
