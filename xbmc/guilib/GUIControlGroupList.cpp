@@ -668,8 +668,8 @@ void CGUIControlGroupList::ScrollPages(float pages)
 
   if (newOffset < 0.f)
     newOffset = 0.f;
-  else if (newOffset > m_totalSize - Size())
-    newOffset = m_totalSize - Size();
+  else if (newOffset > m_totalSize)
+    newOffset = m_totalSize;
 
   CGUIControl* focusedControl = GetFocusedControl();
   if (focusedControl)

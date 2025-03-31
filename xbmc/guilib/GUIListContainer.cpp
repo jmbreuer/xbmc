@@ -171,9 +171,9 @@ void CGUIListContainer::Scroll(int amount)
 {
   // increase or decrease the offset
   int offset = GetOffset() + amount;
-  if (offset > (int)m_items.size() - m_itemsPerPage)
+  if (offset > (int)m_items.size())
   {
-    offset = m_items.size() - m_itemsPerPage;
+    offset = m_items.size();
   }
   if (offset < 0) offset = 0;
   ScrollToOffset(offset);

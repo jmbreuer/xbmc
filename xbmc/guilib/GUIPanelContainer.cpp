@@ -394,9 +394,9 @@ void CGUIPanelContainer::Scroll(int amount)
 {
   // increase or decrease the offset
   int offset = GetOffset() + amount;
-  if (offset > ((int)GetRows() - m_itemsPerPage) * m_itemsPerRow)
+  if (offset > ((int)GetRows()) * m_itemsPerRow)
   {
-    offset = ((int)GetRows() - m_itemsPerPage) * m_itemsPerRow;
+    offset = ((int)GetRows()) * m_itemsPerRow;
   }
   if (offset < 0) offset = 0;
   ScrollToOffset(offset);

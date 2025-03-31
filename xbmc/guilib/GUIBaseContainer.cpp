@@ -976,7 +976,7 @@ void CGUIBaseContainer::SetPageControl(int id)
 bool CGUIBaseContainer::GetOffsetRange(int &minOffset, int &maxOffset) const
 {
   minOffset = 0;
-  maxOffset = GetRows() - m_itemsPerPage;
+  maxOffset = GetRows();
   return true;
 }
 
@@ -1216,10 +1216,13 @@ int CGUIBaseContainer::ScrollCorrectionRange() const
 
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
+  /*
   int minOffset, maxOffset;
   if(GetOffsetRange(minOffset, maxOffset))
     offset = std::max(minOffset, std::min(offset, maxOffset));
+  */
   float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
+  /*
   int range = ScrollCorrectionRange();
   if (offset * size < m_scroller.GetValue() &&  m_scroller.GetValue() - offset * size > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
@@ -1229,6 +1232,7 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   { // scrolling down, and we're jumping more than 0.5 of a screen
     m_scroller.SetValue((offset - range) * size);
   }
+  */
   m_scroller.ScrollTo(offset * size);
   m_lastScrollStartTimer.StartZero();
   if (!m_wasReset)
