@@ -162,11 +162,11 @@ bool GUIScrollBarControl::Move(int numSteps)
 {
   if (numSteps < 0 && m_offset == 0) // we are at the beginning - can't scroll up/left anymore
     return false;
-  if (numSteps > 0 && m_offset == std::max(m_numItems - m_pageSize, 0)) // we are at the end - we can't scroll down/right anymore
+  if (numSteps > 0 && m_offset == std::max(m_numItems, 0)) // we are at the end - we can't scroll down/right anymore
     return false;
 
   m_offset += numSteps * m_pageSize;
-  if (m_offset > m_numItems - m_pageSize) m_offset = m_numItems - m_pageSize;
+  if (m_offset > m_numItems) m_offset = m_numItems;
   if (m_offset < 0) m_offset = 0;
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, GetParentID(), GetID(), GUI_MSG_PAGE_CHANGE, m_offset);
   SendWindowMessage(message);
