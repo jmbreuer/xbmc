@@ -58,7 +58,7 @@ namespace XFILE
     }
 
   private:
-    std::unique_ptr<CCacheStrategy> m_pCache;
+    inline static std::unique_ptr<CCacheStrategy> m_pCache; // ~jmbreuer tryout have only one of these
     int m_seekPossible = 0;
     CFile m_source;
     std::string m_sourcePath;
